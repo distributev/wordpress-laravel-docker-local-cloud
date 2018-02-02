@@ -86,7 +86,7 @@ http://dokku.viewdocs.io/dokku/getting-started/installation/
 
 https://apps.domain.com  (WordPress should be available here - Sage 9 theme)<br>
 https://apps.domain.com/wp-admin  (WordPress admin should be available here)<br> 
-https://apps.domain.com/lara-admin  (Laravel "hello world" started app app should should be available here)<br>
+https://apps.domain.com/lara-admin  (Laravel "hello world" started app app should be available here)<br>
 
 Remember WordPress, Laravel and Adminer should be pre-installed / pre-configured. No manual steps should be required once the docker containers are started. Adminer should be pre-configured to connect to the WordPress database.
 
