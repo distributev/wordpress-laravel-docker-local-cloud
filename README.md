@@ -1,5 +1,3 @@
-# wordpress-laravel-docker-local-cloud
-
 # Scope of Project
 
 Use Docker to provide a WordPress / Laravel environment which will be easy to use for local development and for deploying to the cloud (AWS)
