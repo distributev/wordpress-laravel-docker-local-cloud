@@ -5,6 +5,10 @@ Use Docker to provide a WordPress / Laravel environment which will be easy to us
 * Local windows development environment (using Docker)
 * Push to git ==> Get deployed automatically live in production (without having to manually FTP upload PHP files or anything like that)
 
+# Project Deliverables
+
+* Required project source code pushed to this github repository
+* Document with detailed and clear steps how to achieve everything described in the below section called <strong>How Testing Will Be Done</strong>
 
 # Tools Used
 
