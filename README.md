@@ -48,9 +48,7 @@ Once deployed to AWS ...
 
 <strong>WordPress</strong> -  change and then do <em>git push</em> to Sage9's index.blade.php https://github.com/roots/sage/blob/master/resources/views/index.blade.php and then refresh the browser's AWS production corresponding https://apps.domain.com URL and make sure the updated page is coming
 
-<br><br>
 <hr>
-<br><br>
 
 # Steps to Implement the Above Requirements
 
@@ -86,7 +84,7 @@ https://apps.domain.com  (WordPress should be available here - Sage 9 theme)<br>
 https://apps.domain.com/wp-admin  (WordPress admin should be available here)<br> 
 https://apps.domain.com/lara-admin  (Laravel "hello world" started app app should should be available here)<br>
 
-Remember WordPress, Laravel and Adminer should be pre-installed / configured. No manual steps should be required once the docker containers are started. Adminer should be pre-configured to connect to the WordPress database.
+Remember WordPress, Laravel and Adminer should be pre-installed / pre-configured. No manual steps should be required once the docker containers are started. Adminer should be pre-configured to connect to the WordPress database.
 
 
 
