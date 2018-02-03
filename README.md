@@ -58,11 +58,11 @@ Once deployed to AWS ...
 
 <strong>Step 1</strong> - Have http://laradock.io/getting-started/#installation pre-requisites in-place
 
-<strong>Step 2</strong> - used Laradock to install a LEMP stack
+<strong>Step 2</strong> - Use Laradock to install a LEMP stack
 
-get the standard laradock images for NGINX, MySQL, Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line)
+A. Get the standard laradock images for NGINX, MySQL, Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line)
 
-Get and then alter (only) the PHP laradock image to build from a dokku compatible Linux container (i.e. Ubuntu) - by default most of laradock.io images build from alpine linux (which is not supported by dokku)
+B. Starting from the standard laradock PHP image alter that image to build from a dokku compatible Linux container (i.e. Ubuntu) - by default most of laradock.io images build from alpine linux (which is not supported by dokku)
 
 On the modified PHP image install / make available Composer tool (for dependency management in PHP)
 
