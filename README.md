@@ -45,7 +45,7 @@ Without any further / manual configuration WordPress, Laravel (/lara-admin) and 
 
 ## Testing Cloud (AWS) Production
 
-No manual configuration should be required to be done on the AWS side. The initial deployment on AWS should be done automatically using the AWS command line scrips and all subsequent updates should be handled automatically through dokku / git push /heroku php buildpack.
+No manual configuration should be required to be done on the AWS side. The initial deployment on AWS should be done automatically using the AWS command line scrips and all subsequent updates should be handled automatically through dokku / git push / heroku php buildpack.
 
 Use laradock/aws/ (see below) AWS elasticbeanstalk command line to deploy all needed laradock docker containers images to AWS (don't do any manual step like don't do FTP or any similar manual upload - All initial AWS deploy should work automatically through the AWS elasticbeanstalk command line)
 
