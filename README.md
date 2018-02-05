@@ -22,6 +22,7 @@ Use Docker to provide a WordPress / Laravel environment which will be easy to us
 * Sage9 WordPress starter theme - https://github.com/roots/sage
 * Adminer - https://www.adminer.org
 * The AWS Elastic Beanstalk Command Line Interface (EB CLI) - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html
+ ( or AWS command line tools or AWS ECS command line tools - whicever is more appropriate)
 
 # Permalink structure
 
@@ -63,6 +64,13 @@ Once deployed to AWS ...
 <strong>Step 2</strong> - Use Laradock to install a LEMP stack
 
 A. Get the standard laradock Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line). Instead of laradock/aws/elasticbeanstalk you can also try AWS command line tools if more appropriate.
+
+For initial AWS deployment use
+
+* Use the AWS Elastic Beanstalk Command Line Interface (EB CLI) - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html
+or 
+* AWS command line tools or 
+* AWS ECS command line tools - whicever is more appropriate.
 
 B. Starting from the standard WordPress docker image alter that image and remove the linese which download wordpress wordpress.tar.gz file (ENV WORDPRESS_VERSION 4.9.2 and the curl command afterwards)
 
