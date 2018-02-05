@@ -44,6 +44,8 @@ Without any further / manual configuration WordPress, Laravel (/lara-admin) and 
 
 ## Testing Cloud (AWS) Production
 
+No manual configuration should be required to be done on the AWS side. The initial deployment on AWS should be done automatically using the AWS command line scrips and all subsequent updates should be handled automatically through dokku / git push /heroku php buildpack.
+
 Use laradock/aws/ (see below) AWS elasticbeanstalk command line to deploy all needed laradock docker containers images to AWS (don't do any manual step like don't do FTP or any similar manual upload - All initial AWS deploy should work automatically through the AWS elasticbeanstalk command line)
 
 Once deployed to AWS ...
@@ -60,11 +62,11 @@ Once deployed to AWS ...
 
 <strong>Step 2</strong> - Use Laradock to install a LEMP stack
 
-A. Get the standard laradock images for NGINX, MySQL, Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line)
+A. Get the standard laradock Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line). Instead of laradock/aws/elasticbeanstalk you can also try AWS command line tools if more appropriate.
 
-B. Starting from the standard laradock PHP image alter that image to build from a dokku compatible Linux container (i.e. Ubuntu) - by default most of laradock.io images build from alpine linux (which is not supported by dokku)
+B. Starting from the standard WordPress docker image alter that image and remove the linese which download wordpress wordpress.tar.gz file (ENV WORDPRESS_VERSION 4.9.2 and the curl command afterwards)
 
-On the modified PHP image install / make available Composer tool (for dependency management in PHP)
+On the modified "php-wordpress-ready" image install PHP Composer tool (for dependency management in PHP)
 
 <strong>Step 3</strong> - On the above PHP/Composer image install roots.io's Bedrock WordPress project boilerplate
 
