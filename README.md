@@ -3,7 +3,7 @@
 Use Docker to provide a WordPress / Laravel environment which will be easy to use for local development and for deploying to the cloud (AWS)
 
 * Local windows development environment (using Docker)
-* Push to git ==> Get deployed automatically live in production (without having to manually FTP upload PHP files or anything like that)
+* Pushing to git ==> will automatically get latest code deployed live in production (without having to manually FTP upload PHP files or anything like that)
 
 # Project Deliverables
 
