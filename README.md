@@ -61,7 +61,7 @@ Once deployed to AWS ...
 
 <strong>Step 1</strong> - Have http://laradock.io/getting-started/#installation pre-requisites in-place
 
-<strong>Step 2</strong> - Use Laradock to install a LEMP stack
+<strong>Step 2</strong> - Use Laradock / Docker to setup a WordPress LAMP stack
 
 A. Get the standard laradock Adminer and AWS (laradock/aws/ is required to get AWS elasticbeanstalk which adds support to automatically deploy to AWS using command line) (instead of laradock/aws/elasticbeanstalk you can also try AWS command line tools or AWS ECS command line tools, if more appropriate).
 
