@@ -11,4 +11,4 @@ inside docker except Dokku.
 For Dokku (which you said needs to run directly on EC2 which will add additional server management overhead / lost cloud provider portability)
 it is fine to create a separate dokku.bat provisioning script powered by ansible also.
 
-Provided that dokku.bat ansible script will be plain stupid and easy to understand (is 25 lines of ansible script achievable for dokku.bat)
+Provided that dokku.bat ansible script will be plain stupid and easy to understand (is 25 lines of ansible script achievable for dokku.bat?)
