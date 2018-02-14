@@ -1,34 +1,38 @@
 version: '2'
 
 volumes:
-  wordpress-db:
-    driver: local
+  wordpress-mysql:
+    driver: "local"
 
 
 services:
 
 
-  mariadb:
-    image: mariadb:10.1
+  mysql:
+    image: mysql:${MYSQL_VERSION}
     environment:
-      MYSQL_ROOT_PASSWORD: w0rdPr3ssdb
-      MYSQL_DATABASE: wordpress
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
-      - wordpress-db:/var/lib/mysql
+      - wordpress-mysql:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
 
 
   wordpress:
     build:
       context: ./wordpress
     depends_on:
-      - mariadb
+      - mysql
     volumes:
       - ${PROJECT_PATH}:/var/www/html
     environment:
-      DB_NAME: wordpress
-      DB_USER: root
-      DB_PASSWORD: w0rdPr3ssdb
-      DB_HOST: mariadb
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOST: mysql
       WP_ENV: development
       WP_HOME: http://127.0.0.1
       WP_SITEURL: http://127.0.0.1/wp
