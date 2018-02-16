@@ -6,7 +6,12 @@
 3. Setup the local environment using
 
     ```
-    PROJECT_PATH=path_to_your_new_project WP_INIT=yes docker-compose up
+    PROJECT_PATH=path_to_your_new_project 
+    WP_INIT=yes 
+    
+    and then run the command
+    
+    docker-compose up
     ```
 
   * You need to provide the path to the project where the setup will create the new bedrock project via `PROJECT_PATH` variable
