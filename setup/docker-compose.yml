@@ -51,7 +51,6 @@ services:
     build:
       context: ./wordpress
       dockerfile: Dockerfile.dev
-    working_dir: /var/www/html/web/app/themes/sage
     entrypoint: /opt/wait.sh
     command: yarn run start
     volumes:

@@ -9,4 +9,4 @@ while ! nc -z wordpress 80; do
   sleep 2
 done
 
-exec "$@"
+cd web/app/themes/sage && exec "$@"
