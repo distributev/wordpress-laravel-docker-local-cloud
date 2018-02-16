@@ -46,6 +46,7 @@ services:
       ADMIN_EMAIL: test@test.com
       SITE_TITLE: Wordpress
 
+  #this container will be used only in the dev environment when using sage theme. it will run server using webpack that watch resources file changes and compile them
   sage:
     build:
       context: ./wordpress
