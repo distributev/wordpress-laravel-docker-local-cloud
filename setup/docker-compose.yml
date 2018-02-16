@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 volumes:
   wordpress-mysql:
@@ -24,10 +24,14 @@ services:
   wordpress:
     build:
       context: ./wordpress
+      dockerfile: Dockerfile.dev
     depends_on:
       - mysql
+    ports:
+      - "80:80"
     volumes:
       - ${PROJECT_PATH}:/var/www/html
+      - ./wordpress:/tmp/wordpress
     environment:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
@@ -36,14 +40,22 @@ services:
       WP_ENV: development
       WP_HOME: http://127.0.0.1
       WP_SITEURL: http://127.0.0.1/wp
-      WP_INIT: "yes" # uncomment below for new installations
+      WP_INIT: ${WP_INIT} # uncomment below for new installations
       ADMIN_USER: admin
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
       SITE_TITLE: Wordpress
 
-
-
-
+  sage:
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile.dev
+    working_dir: /var/www/html/web/app/themes/sage
+    entrypoint: /opt/wait.sh
+    command: yarn run start
+    volumes:
+      - ${PROJECT_PATH}:/var/www/html
+    links:
+      - wordpress:wordpress
 
 
