@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #This init script will Compile assets when file changes are made, start Browsersync session
 
@@ -9,4 +9,4 @@ while ! nc -z wordpress 80; do
   sleep 2
 done
 
-cd web/app/themes/sage && exec "$@"
+exec "$@"

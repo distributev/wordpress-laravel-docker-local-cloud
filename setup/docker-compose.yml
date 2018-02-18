@@ -46,13 +46,31 @@ services:
       ADMIN_EMAIL: test@test.com
       SITE_TITLE: Wordpress
 
-  #this container will be used only in the dev environment when using sage theme. it will run server using webpack that watch resources file changes and compile them
+  #this container will be used only in the dev environment when using sage theme. 
+  #it will run server using webpack that watch resources file changes and compile them
   sage:
     build:
       context: ./wordpress
       dockerfile: Dockerfile.dev
     entrypoint: /opt/wait.sh
-    command: yarn run start
+    command: yarn --cwd=web/app/themes/sage run start
+    depends_on:
+      - wordpress
+    volumes:
+      - ${PROJECT_PATH}:/var/www/html
+    links:
+      - wordpress:wordpress
+
+  #this container will be used only in the dev environment when using laravel theme. 
+  #it will run server using webpack that watch resources file changes and compile them
+  laravel:
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile.dev
+    entrypoint: /opt/wait.sh
+    command: npm --prefix web/app/lara run watch
+    depends_on:
+      - wordpress
     volumes:
       - ${PROJECT_PATH}:/var/www/html
     links:
