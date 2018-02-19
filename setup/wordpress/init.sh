@@ -26,13 +26,13 @@ if [ ${WP_INIT} = "yes" ]; then
   #Install SAGE theme
   gosu www-data composer create-project roots/sage web/app/themes/sage dev-master
   yarn --cwd=web/app/themes/sage #install npm dependencies
-  npm install web/app/themes/sage -g webpack
-  yarn run build #compile assets
+  yarn --cwd=web/app/themes/sage run build #compile assets
   gosu www-data wp theme activate sage/resources #activate sage theme
 
   #Install Laravel
   gosu www-data composer create-project --prefer-dist laravel/laravel web/app/lara
   yarn --cwd=web/app/lara
+  npm --prefix web/app/lara run development
 
   cp -r /tmp/wordpress/. ${APP_PATH}/ #Copy Dockerfile and .dockerignore to root project
   chmod -R 777 .
