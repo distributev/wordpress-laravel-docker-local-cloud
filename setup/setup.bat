@@ -9,4 +9,4 @@ set PROJECT_PATH=%p2_dir%work
 
 set WP_INIT=yes
 
-docker-compose up
+docker-compose up --build
