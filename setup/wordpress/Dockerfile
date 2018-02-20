@@ -1,6 +1,4 @@
-FROM wordpress:4.9.4-php7.2-fpm
-
-ENV APP_PATH /var/www/html
+FROM wordpress:4.9.4-php7.2-apache
 
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
@@ -9,24 +7,82 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');"
 
 
-#TO-Do: Install SAGE dependencies
+RUN apt-get update; \
+  apt-get install -y zip unzip libpng-dev
 
-ADD ./app/composer.json $APP_PATH/
+ENV NODE_VERSION 8.9.4
+RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
+  && case "${dpkgArch##*-}" in \
+    amd64) ARCH='x64';; \
+    ppc64el) ARCH='ppc64le';; \
+    s390x) ARCH='s390x';; \
+    arm64) ARCH='arm64';; \
+    armhf) ARCH='armv7l';; \
+    i386) ARCH='x86';; \
+    *) echo "unsupported architecture"; exit 1 ;; \
+  esac \
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-$ARCH.tar.xz" \
+  && curl -SLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt" \
+  && grep " node-v$NODE_VERSION-linux-$ARCH.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
+  && tar -xJf "node-v$NODE_VERSION-linux-$ARCH.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
+  && rm "node-v$NODE_VERSION-linux-$ARCH.tar.xz" SHASUMS256.txt \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs \
+  && npm install -g webpack@3.10.0
 
+ENV YARN_VERSION 1.3.2
+RUN set -ex \
+  && curl -fSLO --compressed "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
+  && mkdir -p /opt/yarn \
+  && tar -xzf yarn-v$YARN_VERSION.tar.gz -C /opt/yarn --strip-components=1 \
+  && ln -s /opt/yarn/bin/yarn /usr/local/bin/yarn \
+  && ln -s /opt/yarn/bin/yarn /usr/local/bin/yarnpkg \
+  && rm yarn-v$YARN_VERSION.tar.gz
+
+ENTRYPOINT ["docker-php-entrypoint"]
+
+ENV APP_PATH /var/www/wordpress
+RUN mkdir -p $APP_PATH \
+  mkdir -p $APP_PATH/web/app/themes/sage \
+  mkdir -p $APP_PATH/web/app/lara \
+  && chown -R www-data:www-data /var/www
+
+
+USER www-data
+
+WORKDIR $APP_PATH/web/app/lara
+# ADD ./web/app/lara/composer.json ./
+# RUN composer install --no-dev --optimize-autoloader \
+#   && php artisan config:cache
+ADD ./web/app/lara/package.json ./
+RUN yarn
+
+WORKDIR $APP_PATH/web/app/themes/sage
+ADD ./web/app/themes/sage/composer.json ./
+RUN composer install --no-dev
+ADD ./web/app/themes/sage/package.json ./
+RUN yarn
+
+WORKDIR $APP_PATH
+ADD ./composer.json ./
+RUN composer install --no-dev
+
+WORKDIR $APP_PATH
+COPY  . $APP_PATH
+
+WORKDIR $APP_PATH/web/app/themes/sage
+RUN yarn run build:production
+
+WORKDIR $APP_PATH/web/app/lara
+RUN npm run production
+
+WORKDIR $APP_PATH/web/app/lara
+RUN composer install --no-dev --optimize-autoloader \
+  && php artisan config:cache
 
 WORKDIR $APP_PATH
 
-# set folder permissions
-RUN chown -R www-data:www-data /var/www .
+EXPOSE 8080
+COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
+COPY apache-ports.conf /etc/apache2/ports.conf
 
-ENTRYPOINT ["docker-php-entrypoint"]
-ADD bedrock-apache.conf /etc/apache2/sites-available/000-default.conf
 CMD ["apache2-foreground"]
-
-
-
-
-
-
-
-
