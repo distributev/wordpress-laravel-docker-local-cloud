@@ -1,6 +1,6 @@
 FROM wordpress:4.9.4-php7.2-apache
 
-ENV APP_PATH /var/www/html
+ENV APP_PATH /var/www/wordpress
 
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
@@ -75,15 +75,16 @@ WORKDIR $APP_PATH
 # set folder permissions
 RUN chown -R www-data:www-data /var/www && chmod g+s .
 
-EXPOSE 80
 ENTRYPOINT ["docker-php-entrypoint"]
 
 COPY *.sh /opt/
 RUN chmod +x /opt/*.sh \
   && dos2unix /opt/*.sh
 
-ADD bedrock-apache.conf /etc/apache2/sites-available/000-default.conf
-# CMD ["apache2-foreground"]
+EXPOSE 8080
+COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
+COPY apache-ports.conf /etc/apache2/ports.conf
+
 CMD /opt/init.sh && exec apache2-foreground
 
 

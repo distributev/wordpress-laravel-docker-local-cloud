@@ -28,9 +28,9 @@ services:
     depends_on:
       - mysql
     ports:
-      - "80:80"
+      - "8080:8080"
     volumes:
-      - ${PROJECT_PATH}:/var/www/html
+      - ${PROJECT_PATH}:/var/www/wordpress
       - ./wordpress:/tmp/wordpress
     environment:
       DB_NAME: ${MYSQL_DATABASE}
@@ -38,8 +38,8 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_HOST: mysql
       WP_ENV: development
-      WP_HOME: http://127.0.0.1
-      WP_SITEURL: http://127.0.0.1/wp
+      WP_HOME: http://127.0.0.1:8080
+      WP_SITEURL: http://127.0.0.1:8080/wp
       WP_INIT: ${WP_INIT} # uncomment below for new installations
       ADMIN_USER: admin
       ADMIN_PASS: password
@@ -57,9 +57,11 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - ${PROJECT_PATH}:/var/www/html
+      - ${PROJECT_PATH}:/var/www/wordpress
     links:
       - wordpress:wordpress
+    environment:
+      WP_PORT: 8080
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -72,8 +74,10 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - ${PROJECT_PATH}:/var/www/html
+      - ${PROJECT_PATH}:/var/www/wordpress
     links:
       - wordpress:wordpress
+    environment:
+      WP_PORT: 8080
 
 
