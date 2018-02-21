@@ -19,8 +19,13 @@ web/.htaccess
 vendor/*
 !vendor/.gitkeep
 
+.git
 web/app/themes/sage/node_modules
 web/app/themes/sage/vendor
+web/app/themes/sage/dist
 web/app/lara/node_modules
 web/app/lara/vendor
-web/app/themes/sage/dist
+web/app/lara/storage/framework/cache/**
+web/app/lara/storage/framework/sessions/**
+web/app/lara/storage/framework/views/**
+web/app/lara/storage/logs/**

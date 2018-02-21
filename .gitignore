@@ -2,3 +2,4 @@ work
 .vagrant
 .terraform
 *.log
+local.auto.tfvars

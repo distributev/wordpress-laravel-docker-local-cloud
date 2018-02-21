@@ -2,6 +2,9 @@
 
 DOMAIN="${domain}"
 APP_NAME="${app_name}"
+MYSQL_VERSION="${mysql_version}"
+DB_NAME="${mysql_db_name}"
+
 
 echo "Installing Dokku"
 wget https://raw.githubusercontent.com/dokku/dokku/v0.11.3/bootstrap.sh;
@@ -30,8 +33,27 @@ then
 else
     echo "Installing MySQL plugin..."
     dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
+    MYSQL_IMAGE_VERSION="$MYSQL_VERSION" dokku mysql:create $DB_NAME
 fi
 
 echo "Creating wordpress app"
 dokku apps:create $APP_NAME
 dokku domains:enable $APP_NAME
+dokku domains:add $APP_NAME $APP_NAME.$DOMAIN
+dokku proxy:ports-add $APP_NAME http:80:8080
+dokku proxy:ports-remove $APP_NAME http:80:5000
+dokku mysql:link $DB_NAME $APP_NAME
+DB_PASSWORD=$(dokku mysql:info $DB_NAME --dsn | awk -F ':' '{print $3}' | awk -F '@' '{print $1}')
+dokku config:set --no-restart wordpress DB_NAME=$DB_NAME
+dokku config:set --no-restart wordpress DB_USER=mysql
+dokku config:set --no-restart wordpress DB_PASSWORD=$DB_PASSWORD
+dokku config:set --no-restart wordpress DB_HOST=dokku-mysql-$DB_NAME
+
+dokku config:set --no-restart wordpress SITE_TITLE=${site_title}
+dokku config:set --no-restart wordpress ADMIN_USER=${admin_user}
+dokku config:set --no-restart wordpress ADMIN_PASS=${admin_pass}
+dokku config:set --no-restart wordpress ADMIN_EMAIL=${admin_email}
+dokku config:set --no-restart wordpress WP_HOME=http://$APP_NAME.$DOMAIN
+dokku config:set --no-restart wordpress WP_SITEURL=http://$APP_NAME.$DOMAIN/wp
+
+dokku config:set wordpress WP_ENV=production

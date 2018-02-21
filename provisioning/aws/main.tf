@@ -24,8 +24,8 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_security_group" "allow_web_ports" {
-  name        = "allow_vpn_ports"
-  description = "Allow ssh inbound traffic"
+  name        = "allow_web_ports"
+  description = "Allow web inbound traffic"
 
   ingress {
     from_port   = 80
@@ -46,16 +46,39 @@ resource "aws_security_group" "allow_web_ports" {
   }
 }
 
+resource "aws_security_group" "allow_outbound" {
+  name        = "allow_outbound"
+  description = "Allow access to internet"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags {
+    Name = "allow_outbound"
+  }
+}
+
 
 resource "aws_instance" "dokku" {
   ami           = "${data.aws_ami.ubuntu16.id}"
   instance_type = "${var.ec2_type}"
+  availability_zone = "${data.aws_availability_zones.available.names[0]}"
   key_name = "${aws_key_pair.key_ec2.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}", "${aws_security_group.allow_web_ports.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}", "${aws_security_group.allow_web_ports.id}", "${aws_security_group.allow_outbound.id}"]
   tags {
     Name = "Dokku"
   }
   user_data       = "${data.template_file.dokku_provisioning.rendered}"
+
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = 30
+    delete_on_termination = true
+  }
 }
 
 resource "aws_eip" "eip_dokku" {

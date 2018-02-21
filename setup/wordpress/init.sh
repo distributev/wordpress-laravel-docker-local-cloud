@@ -10,24 +10,22 @@ if [ ${WP_INIT} = "yes" ]; then
   chown -R www-data:www-data . && chmod g+s .
   gosu www-data composer create-project roots/bedrock .
 
-  if [ -n "$ADMIN_USER" ] && [ -n "$ADMIN_PASS" ] && [ -n "$ADMIN_EMAIL" ] && [ -n "$SITE_TITLE" ]; then
-    sync # see: https://github.com/docker/docker/issues/9547
 
-    echo "Installing wordpress..."
-    gosu www-data wp core install \
-      --title=${SITE_TITLE} \
-      --admin_user=${ADMIN_USER} \
-      --admin_password=${ADMIN_PASS} \
-      --admin_email=${ADMIN_EMAIL} \
-      --url=${WP_HOME} \
-      --skip-email
-  fi
-
-  #Install SAGE theme
+  echo "Installing Sage9 theme..."
   gosu www-data composer create-project roots/sage web/app/themes/sage dev-master
   yarn --cwd=web/app/themes/sage #install npm dependencies
   yarn --cwd=web/app/themes/sage run build #compile assets
+  
+  echo "Installing wordpress..."
+  gosu www-data wp core install \
+    --title=${SITE_TITLE} \
+    --admin_user=${ADMIN_USER} \
+    --admin_password=${ADMIN_PASS} \
+    --admin_email=${ADMIN_EMAIL} \
+    --url=${WP_HOME} \
+    --skip-email
   gosu www-data wp theme activate sage/resources #activate sage theme
+
 
   #Install Laravel
   gosu www-data composer create-project --prefer-dist laravel/laravel web/app/lara

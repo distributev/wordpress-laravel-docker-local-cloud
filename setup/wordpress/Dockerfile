@@ -6,6 +6,11 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     php -r "unlink('composer-setup.php');"
 
+# install wordpress cli
+# https://github.com/KaiHofstetter/docker-wordpress-cli/blob/master/Dockerfile
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp
 
 RUN apt-get update; \
   apt-get install -y zip unzip libpng-dev
@@ -42,42 +47,41 @@ ENTRYPOINT ["docker-php-entrypoint"]
 
 ENV APP_PATH /var/www/wordpress
 RUN mkdir -p $APP_PATH \
-  mkdir -p $APP_PATH/web/app/themes/sage \
+  mkdir -p $APP_PATH/web/app/themes/sage/dist \
   mkdir -p $APP_PATH/web/app/lara \
-  && chown -R www-data:www-data /var/www
+  && chown -R www-data:www-data /var/www && chmod g+s .
 
 
 USER www-data
 
 WORKDIR $APP_PATH/web/app/lara
-# ADD ./web/app/lara/composer.json ./
-# RUN composer install --no-dev --optimize-autoloader \
-#   && php artisan config:cache
-ADD ./web/app/lara/package.json ./
+ADD ./web/app/lara/composer.lock ./web/app/lara/composer.json ./
+ADD web/app/lara/database ./database
+RUN composer install --no-dev --no-scripts
+ADD ./web/app/lara/yarn.lock ./web/app/lara/package.json ./
 RUN yarn
 
 WORKDIR $APP_PATH/web/app/themes/sage
-ADD ./web/app/themes/sage/composer.json ./
+ADD ./web/app/themes/sage/composer.lock ./web/app/themes/sage/composer.json ./
 RUN composer install --no-dev
-ADD ./web/app/themes/sage/package.json ./
+ADD ./web/app/themes/sage/yarn.lock ./web/app/themes/sage/package.json ./
 RUN yarn
 
 WORKDIR $APP_PATH
-ADD ./composer.json ./
+ADD ./composer.lock ./composer.json ./
 RUN composer install --no-dev
 
+
 WORKDIR $APP_PATH
-COPY  . $APP_PATH
+COPY  --chown=www-data:www-data . $APP_PATH
 
 WORKDIR $APP_PATH/web/app/themes/sage
 RUN yarn run build:production
 
 WORKDIR $APP_PATH/web/app/lara
-RUN npm run production
-
-WORKDIR $APP_PATH/web/app/lara
 RUN composer install --no-dev --optimize-autoloader \
-  && php artisan config:cache
+  && npm run production
+
 
 WORKDIR $APP_PATH
 
@@ -85,4 +89,11 @@ EXPOSE 8080
 COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
 COPY apache-ports.conf /etc/apache2/ports.conf
 
-CMD ["apache2-foreground"]
+
+COPY wp_init.sh /opt/
+USER root
+RUN chmod +x /opt/wp_init.sh
+USER www-data
+
+# CMD ["apache2-foreground"]
+CMD /opt/wp_init.sh && exec apache2-foreground

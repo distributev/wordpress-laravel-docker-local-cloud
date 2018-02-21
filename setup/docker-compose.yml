@@ -38,13 +38,13 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_HOST: mysql
       WP_ENV: development
-      WP_HOME: http://127.0.0.1:8080
       WP_SITEURL: http://127.0.0.1:8080/wp
-      WP_INIT: ${WP_INIT} # uncomment below for new installations
+      WP_INIT: ${WP_INIT} # set WP_INIT to yes to initialize new project
+      SITE_TITLE: Wordpress
       ADMIN_USER: admin
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
-      SITE_TITLE: Wordpress
+      WP_HOME: http://127.0.0.1:8080
 
   #this container will be used only in the dev environment when using sage theme. 
   #it will run server using webpack that watch resources file changes and compile them
