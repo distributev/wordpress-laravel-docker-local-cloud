@@ -20,6 +20,13 @@ services:
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
 
+  adminer:
+    image: adminer
+    links:
+      - mysql:db
+    ports:
+      - 9000:8080
+
 
   wordpress:
     build:
