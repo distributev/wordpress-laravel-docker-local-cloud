@@ -1,0 +1,3 @@
+.terraform
+local.auto.tfvars
+secret.auto.tfvars
