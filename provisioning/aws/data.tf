@@ -39,6 +39,7 @@ data "template_file" "dokku_provisioning" {
         admin_user = "${var.admin_user}"
         admin_pass = "${var.admin_pass}"
         admin_email = "${var.admin_email}"
+        adminer_port = "${var.adminer_port}"
     }
 }
 

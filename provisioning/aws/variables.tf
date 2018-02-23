@@ -75,3 +75,8 @@ variable "admin_pass" {
 variable "admin_email" {
   default = "admin@domain.tld"
 }
+
+variable "adminer_port" {
+  default = "9000"
+  description = "adminer will be reachabled through domain.tld:adminer_port"
+}

@@ -33,7 +33,12 @@ then
 else
     echo "Installing MySQL plugin..."
     dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
-    MYSQL_IMAGE_VERSION="$MYSQL_VERSION" dokku mysql:create $DB_NAME
+    MYSQL_IMAGE_VERSION="$MYSQL_VERSION" SERVICE_ROOT_PASSWORD="root" dokku mysql:create $DB_NAME
+
+    echo "Installing Adminer..."
+    docker run -d -p ${adminer_port}:8080 --link dokku.mysql.$DB_NAME:db --name adminer adminer
+
+    
 fi
 
 echo "Creating wordpress app"

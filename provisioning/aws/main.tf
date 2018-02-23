@@ -48,6 +48,22 @@ resource "aws_security_group" "allow_web_ports" {
   }
 }
 
+resource "aws_security_group" "allow_adminer" {
+  name        = "allow_adminer"
+  description = "Allow adminer"
+
+  ingress {
+    from_port   = "${var.adminer_port}"
+    to_port     = "${var.adminer_port}"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags {
+    Name = "allow_admine"
+  }
+}
+
 resource "aws_security_group" "allow_outbound" {
   name        = "allow_outbound"
   description = "Allow access to internet"
@@ -70,7 +86,7 @@ resource "aws_instance" "dokku" {
   instance_type = "${var.ec2_type}"
   availability_zone = "${data.aws_availability_zones.available.names[0]}"
   key_name = "${aws_key_pair.key_ec2.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}", "${aws_security_group.allow_web_ports.id}", "${aws_security_group.allow_outbound.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_ssh.id}", "${aws_security_group.allow_web_ports.id}", "${aws_security_group.allow_outbound.id}", "${aws_security_group.allow_adminer.id}"]
   tags {
     Name = "Dokku"
   }
