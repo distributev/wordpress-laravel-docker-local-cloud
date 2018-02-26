@@ -35,23 +35,25 @@ services:
     depends_on:
       - mysql
     ports:
-      - "8080:8080"
+      - "${WP_PORT}:8080"
     volumes:
       - ${PROJECT_PATH}:/var/www/wordpress
       - ./wordpress:/tmp/wordpress
     environment:
+      BEDROCK_PATH: ${BEDROCK_PATH}
+      LARAVEL_PATH: ${LARAVEL_PATH}
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_HOST: mysql
       WP_ENV: development
-      WP_SITEURL: http://127.0.0.1:8080/wp
+      WP_SITEURL: http://127.0.0.1:${WP_PORT}/wp
       WP_INIT: ${WP_INIT} # set WP_INIT to yes to initialize new project
       SITE_TITLE: Wordpress
       ADMIN_USER: admin
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
-      WP_HOME: http://127.0.0.1:8080
+      WP_HOME: http://127.0.0.1:${WP_PORT}
 
   #this container will be used only in the dev environment when using sage theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -60,7 +62,7 @@ services:
       context: ./wordpress
       dockerfile: Dockerfile.dev
     entrypoint: /opt/wait.sh
-    command: yarn --cwd=web/app/themes/sage run start
+    command: yarn --cwd=${BEDROCK_PATH}/web/app/themes/sage run start
     depends_on:
       - wordpress
     volumes:
@@ -68,7 +70,7 @@ services:
     links:
       - wordpress:wordpress
     environment:
-      WP_PORT: 8080
+      WP_PORT: ${WP_PORT}
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -77,7 +79,7 @@ services:
       context: ./wordpress
       dockerfile: Dockerfile.dev
     entrypoint: /opt/wait.sh
-    command: npm --prefix web/app/lara run watch
+    command: npm --prefix ${LARAVEL_PATH} run watch
     depends_on:
       - wordpress
     volumes:
@@ -85,6 +87,6 @@ services:
     links:
       - wordpress:wordpress
     environment:
-      WP_PORT: 8080
+      WP_PORT: ${WP_PORT}
 
 

@@ -1,31 +1,25 @@
 # Application
-web/app/plugins/*
-!web/app/plugins/.gitkeep
-web/app/mu-plugins/*/
-web/app/upgrade
-web/app/uploads/*
-!web/app/uploads/.gitkeep
+**/web/app/plugins/*
+!**/web/app/plugins/.gitkeep
+**/web/app/mu-plugins/*/
+**/web/app/upgrade
+**/web/app/uploads/*
+!**/web/app/uploads/.gitkeep
 
 # WordPress
-web/wp
-web/.htaccess
+**/web/wp
+**/web/.htaccess
 
 # Dotenv
-.env
-.env.*
-!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
-# Composer
-vendor/*
-!vendor/.gitkeep
-
-.git
-web/app/themes/sage/node_modules
-web/app/themes/sage/vendor
-web/app/themes/sage/dist
-web/app/lara/node_modules
-web/app/lara/vendor
-web/app/lara/storage/framework/cache/**
-web/app/lara/storage/framework/sessions/**
-web/app/lara/storage/framework/views/**
-web/app/lara/storage/logs/**
+**/.git
+**/node_modules
+**/vendor
+**/dist
+**/storage/framework/cache/**
+**/storage/framework/sessions/**
+**/storage/framework/views/**
+**/storage/logs/**

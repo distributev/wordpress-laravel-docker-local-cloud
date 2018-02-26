@@ -1,7 +1,5 @@
 FROM wordpress:4.9.4-php7.2-apache
 
-ENV APP_PATH /var/www/wordpress
-
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php -r "if (print hash_file('SHA384', 'composer-setup.php') ===  file_get_contents('https://composer.github.io/installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
@@ -69,6 +67,8 @@ RUN set -ex \
   && ln -s /opt/yarn/bin/yarn /usr/local/bin/yarnpkg \
   && rm yarn-v$YARN_VERSION.tar.gz
 
+
+ENV APP_PATH /var/www/wordpress
 
 WORKDIR $APP_PATH
 

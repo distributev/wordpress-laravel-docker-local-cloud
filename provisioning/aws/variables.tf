@@ -49,7 +49,7 @@ variable "app_name" {
 }
 
 variable "mysql_version" {
-  default = "8.0"
+  default = "5.7"
   description = "MySQL version that will be deployed"
 }
 

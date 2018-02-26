@@ -3,35 +3,31 @@
 set -ax
 
 WP_INIT=${WP_INIT:-"no"}
+BEDROCK_PATH=${BEDROCK_PATH:-"bedrock"}
+SAGE_PATH="$BEDROCK_PATH/web/app/themes/sage"
+LARAVEL_PATH=${LARAVEL_PATH:-"laravel"}
 
 if [ ${WP_INIT} = "yes" ]; then
-  # install bedrock & set permissions
+  # install bedrock
   echo "Installing bedrock..."
   chown -R www-data:www-data . && chmod g+s .
-  gosu www-data composer create-project roots/bedrock .
+  gosu www-data composer create-project roots/bedrock $BEDROCK_PATH
 
 
   echo "Installing Sage9 theme..."
-  gosu www-data composer create-project roots/sage web/app/themes/sage dev-master
-  yarn --cwd=web/app/themes/sage #install npm dependencies
-  yarn --cwd=web/app/themes/sage run build #compile assets
+  gosu www-data composer create-project roots/sage $SAGE_PATH dev-master
+  yarn --cwd=$SAGE_PATH #install npm dependencies
+  yarn --cwd=$SAGE_PATH run build #compile assets
   
   echo "Installing wordpress..."
-  gosu www-data wp core install \
-    --title=${SITE_TITLE} \
-    --admin_user=${ADMIN_USER} \
-    --admin_password=${ADMIN_PASS} \
-    --admin_email=${ADMIN_EMAIL} \
-    --url=${WP_HOME} \
-    --skip-email
-  gosu www-data wp theme activate sage/resources #activate sage theme
+  gosu www-data /opt/wp_init.sh
 
 
   #Install Laravel
-  gosu www-data composer create-project --prefer-dist laravel/laravel web/app/lara
-  yarn --cwd=web/app/lara
-  npm --prefix web/app/lara run development
+  gosu www-data composer create-project --prefer-dist laravel/laravel $LARAVEL_PATH
+  yarn --cwd=$LARAVEL_PATH
+  npm --prefix $LARAVEL_PATH run development
 
-  cp -r /tmp/wordpress/. ${APP_PATH}/ #Copy Dockerfile and .dockerignore to root project
+  cp -r /tmp/wordpress/. . #Copy Dockerfile and .dockerignore to root project
   chmod -R 777 .
 fi
