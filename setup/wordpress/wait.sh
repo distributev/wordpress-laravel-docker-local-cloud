@@ -4,7 +4,7 @@
 
 set -e
 
-while ! nc -z wordpress $WP_PORT; do
+while ! nc -z wordpress $WP_INTERNAL_PORT; do
   echo "Waiting for wordpress service to start..."
   sleep 5
 done

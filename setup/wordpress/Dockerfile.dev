@@ -81,9 +81,8 @@ COPY *.sh /opt/
 RUN chmod +x /opt/*.sh \
   && dos2unix /opt/*.sh
 
-EXPOSE 8080
+EXPOSE 80
 COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
-COPY apache-ports.conf /etc/apache2/ports.conf
 
 CMD /opt/init.sh && exec apache2-foreground
 

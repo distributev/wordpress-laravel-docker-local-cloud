@@ -35,7 +35,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - "${WP_PORT}:8080"
+      - "${WP_PORT}:80"
     volumes:
       - ${PROJECT_PATH}:/var/www/wordpress
       - ./wordpress:/tmp/wordpress
@@ -70,7 +70,7 @@ services:
     links:
       - wordpress:wordpress
     environment:
-      WP_PORT: ${WP_PORT}
+      WP_INTERNAL_PORT: 80
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -87,6 +87,6 @@ services:
     links:
       - wordpress:wordpress
     environment:
-      WP_PORT: ${WP_PORT}
+      WP_INTERNAL_PORT: 80
 
 

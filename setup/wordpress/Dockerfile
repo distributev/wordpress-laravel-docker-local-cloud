@@ -13,7 +13,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     mv wp-cli.phar /usr/local/bin/wp
 
 RUN apt-get update; \
-  apt-get install -y zip unzip libpng-dev
+  apt-get install -y zip unzip libpng-dev libcap2-bin
+
+RUN setcap 'cap_net_bind_service=+eip' /usr/sbin/apache2 #allow apache to run on priviliged port (80)  
 
 ENV NODE_VERSION 8.9.4
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
@@ -95,8 +97,6 @@ WORKDIR $APP_PATH
 
 EXPOSE 8080
 COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
-COPY apache-ports.conf /etc/apache2/ports.conf
-
 
 COPY wp_init.sh /opt/
 USER root

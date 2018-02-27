@@ -45,7 +45,7 @@ echo "Creating wordpress app"
 dokku apps:create $APP_NAME
 dokku domains:enable $APP_NAME
 dokku domains:add $APP_NAME $APP_NAME.$DOMAIN
-dokku proxy:ports-add $APP_NAME http:80:8080
+dokku proxy:ports-add $APP_NAME http:80:80
 dokku proxy:ports-remove $APP_NAME http:80:5000
 dokku mysql:link $DB_NAME $APP_NAME
 DB_PASSWORD=$(dokku mysql:info $DB_NAME --dsn | awk -F ':' '{print $3}' | awk -F '@' '{print $1}')
