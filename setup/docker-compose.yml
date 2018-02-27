@@ -28,7 +28,7 @@ services:
       - 9000:8080
 
 
-  wordpress:
+  bedrock_sage_lara:
     build:
       context: ./wordpress
       dockerfile: Dockerfile.dev
@@ -57,7 +57,7 @@ services:
 
   #this container will be used only in the dev environment when using sage theme. 
   #it will run server using webpack that watch resources file changes and compile them
-  sage:
+  sage_builder:
     build:
       context: ./wordpress
       dockerfile: Dockerfile.dev
@@ -74,7 +74,7 @@ services:
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
-  laravel:
+  laravel_builder:
     build:
       context: ./wordpress
       dockerfile: Dockerfile.dev
