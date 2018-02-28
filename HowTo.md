@@ -84,3 +84,11 @@ tail -f /var/log/cloud-init-output.log
 
 1. Commit changes
 2. `git push dokku master`
+
+
+## How To SSH to Dokku EC2
+
+### What and how needs to be configured in Putty?
+
+### Which SSH user and password needs to be used in Putty?
+
