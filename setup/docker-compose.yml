@@ -48,7 +48,6 @@ services:
       DB_HOST: mysql
       WP_ENV: development
       WP_SITEURL: http://127.0.0.1:${APACHE_PORT}/wp
-      WP_INIT: ${WP_INIT} # set WP_INIT to yes to initialize new project
       SITE_TITLE: Wordpress
       ADMIN_USER: admin
       ADMIN_PASS: password

@@ -3,5 +3,10 @@ set -ax
 
 BEDROCK_PATH=$1
 
-echo "Installing bedrock..."
-composer create-project roots/bedrock $BEDROCK_PATH
+if [ ! -d $BEDROCK_PATH ]; then
+
+  echo "Installing bedrock..."
+  composer create-project roots/bedrock $BEDROCK_PATH
+  
+fi
+
