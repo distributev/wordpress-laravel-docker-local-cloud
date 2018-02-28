@@ -12,32 +12,10 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
-#Installing GOSU
-ENV GOSU_VERSION 1.10
-RUN set -ex; \
-  \
-  fetchDeps=' \
-    wget \
-  '; \
-  apt-get update; \
-  apt-get install -y --no-install-recommends $fetchDeps; \
-  rm -rf /var/lib/apt/lists/*; \
-  \
-  dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-  wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-  \
-  chmod +x /usr/local/bin/gosu; \
-# verify that the binary works
-  gosu nobody true
-
-#libpng-dev: needed to install laravel frontend npm dependencies
-#dos2unix to convert script from DOS format to the Unix. Otherwise we'll have bugs when running containers on Windows
 RUN apt-get update; \
-  apt-get install -y zip unzip netcat libpng-dev dos2unix
+  apt-get install -y zip unzip libpng-dev libcap2-bin
 
-
-
-#TO-Do: Install SAGE dependencies
+RUN setcap 'cap_net_bind_service=+eip' /usr/sbin/apache2 #allow apache to run on priviliged port (80)  
 
 ENV NODE_VERSION 8.9.4
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
@@ -67,29 +45,63 @@ RUN set -ex \
   && ln -s /opt/yarn/bin/yarn /usr/local/bin/yarnpkg \
   && rm yarn-v$YARN_VERSION.tar.gz
 
+ENTRYPOINT ["docker-php-entrypoint"]
 
 ENV APP_PATH /var/www/wordpress
+ENV BEDROCK_PATH $APP_PATH/bedrock
+ENV SAGE_PATH $BEDROCK_PATH/web/app/themes/sage
+ENV LARAVEL_PATH $APP_PATH/laravel
+
+ENV LOCAL_BEDROCK_PATH bedrock
+ENV LOCAL_SAGE_PATH $LOCAL_BEDROCK_PATH/web/app/themes/sage
+ENV LOCAL_LARAVEL_PATH laravel
+
+RUN mkdir -p $APP_PATH \
+  mkdir -p $SAGE_PATH/dist \
+  mkdir -p $LARAVEL_PATH \
+  && chown -R www-data:www-data /var/www && chmod g+s .
+
+
+USER www-data
+
+WORKDIR $LARAVEL_PATH
+ADD $LOCAL_LARAVEL_PATH/composer.lock $LOCAL_LARAVEL_PATH/composer.json ./
+ADD $LOCAL_LARAVEL_PATH/database ./database
+RUN composer install --no-dev --no-scripts
+ADD $LOCAL_LARAVEL_PATH/yarn.lock $LOCAL_LARAVEL_PATH/package.json ./
+RUN yarn
+
+WORKDIR $SAGE_PATH
+ADD $LOCAL_SAGE_PATH/composer.lock $LOCAL_SAGE_PATH/composer.json ./
+RUN composer install --no-dev
+ADD $LOCAL_SAGE_PATH/yarn.lock $LOCAL_SAGE_PATH/package.json ./
+RUN yarn
+
+WORKDIR $BEDROCK_PATH
+ADD $LOCAL_BEDROCK_PATH/composer.lock $LOCAL_BEDROCK_PATH/composer.json ./
+RUN composer install --no-dev
+
+
+WORKDIR $APP_PATH
+COPY  --chown=www-data:www-data . $APP_PATH
+
+WORKDIR $SAGE_PATH
+RUN yarn run build:production
+
+WORKDIR $LARAVEL_PATH
+RUN composer install --no-dev --optimize-autoloader \
+  && npm run production
+
 
 WORKDIR $APP_PATH
 
-# set folder permissions
-RUN chown -R www-data:www-data /var/www && chmod g+s .
-
-ENTRYPOINT ["docker-php-entrypoint"]
-
-COPY *.sh /opt/
-RUN chmod +x /opt/*.sh \
-  && dos2unix /opt/*.sh
-
-EXPOSE 80
+EXPOSE 8080
 COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
 
-CMD /opt/init.sh && exec apache2-foreground
+COPY wordpress.sh /opt/
+USER root
+RUN chmod +x /opt/wordpress.sh
+USER www-data
 
-
-
-
-
-
-
-
+# CMD ["apache2-foreground"]
+CMD /opt/wordpress.sh $BEDROCK_PATH && exec apache2-foreground

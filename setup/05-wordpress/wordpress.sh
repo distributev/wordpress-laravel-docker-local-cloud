@@ -1,6 +1,10 @@
 #!/bin/bash
+set -ax
 
-(cd ${BEDROCK_PATH} && wp core install \
+BEDROCK_PATH=$1
+
+echo "Installing wordpress..."
+(cd $BEDROCK_PATH && wp core install \
   --title=${SITE_TITLE} \
   --admin_user=${ADMIN_USER} \
   --admin_password=${ADMIN_PASS} \
