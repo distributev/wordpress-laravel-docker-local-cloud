@@ -13,13 +13,13 @@ then you must use the same name with other docker-compose commands
 
 # View Services
 
-**_docker-compose ps_**
-**_docker-compose -p $project_name$ ps_**
+* **_docker-compose ps_**
+* **_docker-compose -p $project_name$ ps_**
 
 # View Logs
 
-**_docker-compose logs -f $project_name$_**
-**_docker-compose -p $project_name$ logs_**
+* **_docker-compose logs -f $project_name$_**
+* **_docker-compose -p $project_name$ logs_**
 
 
 # Stop all running containers
