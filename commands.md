@@ -3,16 +3,24 @@
 
 First time after git cloning the project
 
-**_docker-compose -p project_name up -d --build_**
+**_docker-compose -p $project_name$ up -d --build_**
 
 Sub-sequent executions
 
-**_docker-compose -p aws4 up_**
+**_docker-compose -p $project_name$ up_**
 
 then you must use the same name with other docker-compose commands
 
-* **_docker-compose -p project_name ps_**
-* **_docker-compose -p project_name logs_**
+# View Services
+
+**_docker-compose ps_**
+**_docker-compose -p $project_name$ ps_**
+
+# View Logs
+
+**_docker-compose logs -f $project_name$_**
+**_docker-compose -p $project_name$ logs_**
+
 
 # Stop all running containers
 
