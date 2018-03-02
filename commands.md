@@ -3,6 +3,10 @@
 
 First time after git cloning the project
 
+**_docker-compose -p $project_name$ up --build_**
+
+or if you need to run in detached mode
+
 **_docker-compose -p $project_name$ up -d --build_**
 
 Sub-sequent executions
