@@ -19,7 +19,8 @@ then you must use the same name with other docker-compose commands
 # View Logs
 
 * **_docker-compose logs -f $service_name$_**
-* **_docker-compose -p $service_name$ logs_**
+* **_docker-compose -p $project_name$ logs_**
+* **_docker-compose -p $project_name$ logs -f $service_name$_**
 
 
 # Stop all running containers
