@@ -19,3 +19,12 @@ do
   cp "/tmp/setup/$file" .; 
 done
 chmod -R 777 .
+
+set +x
+echo "\n"
+echo "****************************"
+echo "EVERYTHING IS UP AND RUNNING"
+echo "****************************"
+echo "Wordpress app is accessible at this URL - ${WP_HOME}"
+echo "Wordpress admin is accessible at this URL - ${WP_HOME}/wp/wp-admin/index.php"
+echo "Laravel app is accessible at this URL - ${WP_HOME}/lara\n"
