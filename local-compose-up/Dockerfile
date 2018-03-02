@@ -65,20 +65,20 @@ RUN mkdir -p $APP_PATH \
 USER www-data
 
 WORKDIR $LARAVEL_PATH
-ADD $LOCAL_LARAVEL_PATH/composer.lock $LOCAL_LARAVEL_PATH/composer.json ./
-ADD $LOCAL_LARAVEL_PATH/database ./database
+COPY --chown=www-data:www-data $LOCAL_LARAVEL_PATH/composer.lock $LOCAL_LARAVEL_PATH/composer.json ./
+COPY --chown=www-data:www-data $LOCAL_LARAVEL_PATH/database ./database
 RUN composer install --no-dev --no-scripts
-ADD $LOCAL_LARAVEL_PATH/yarn.lock $LOCAL_LARAVEL_PATH/package.json ./
+COPY --chown=www-data:www-data $LOCAL_LARAVEL_PATH/yarn.lock $LOCAL_LARAVEL_PATH/package.json ./
 RUN yarn
 
 WORKDIR $SAGE_PATH
-ADD $LOCAL_SAGE_PATH/composer.lock $LOCAL_SAGE_PATH/composer.json ./
+COPY --chown=www-data:www-data $LOCAL_SAGE_PATH/composer.lock $LOCAL_SAGE_PATH/composer.json ./
 RUN composer install --no-dev
-ADD $LOCAL_SAGE_PATH/yarn.lock $LOCAL_SAGE_PATH/package.json ./
+COPY --chown=www-data:www-data $LOCAL_SAGE_PATH/yarn.lock $LOCAL_SAGE_PATH/package.json ./
 RUN yarn
 
 WORKDIR $BEDROCK_PATH
-ADD $LOCAL_BEDROCK_PATH/composer.lock $LOCAL_BEDROCK_PATH/composer.json ./
+COPY --chown=www-data:www-data $LOCAL_BEDROCK_PATH/composer.lock $LOCAL_BEDROCK_PATH/composer.json ./
 RUN composer install --no-dev
 
 
@@ -93,7 +93,8 @@ RUN composer install --no-dev --optimize-autoloader \
   && npm run production
 
 
-WORKDIR $APP_PATH
+
+WORKDIR /var/www/html
 
 EXPOSE 8080
 COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
@@ -104,4 +105,4 @@ RUN chmod +x /opt/wordpress.sh
 USER www-data
 
 # CMD ["apache2-foreground"]
-CMD /opt/wordpress.sh $BEDROCK_PATH && exec apache2-foreground
+CMD mv $APP_PATH/* /var/www/html && /opt/wordpress.sh /var/www/html/bedrock && exec apache2-foreground

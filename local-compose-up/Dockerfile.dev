@@ -68,7 +68,7 @@ RUN set -ex \
   && rm yarn-v$YARN_VERSION.tar.gz
 
 
-ENV APP_PATH /var/www/wordpress
+ENV APP_PATH /var/www/html
 
 WORKDIR $APP_PATH
 
