@@ -24,11 +24,11 @@ then you must use the same name with other docker-compose commands
 
 # Stop all running containers
 
-**_docker stop $(docker ps -aq)_**
+**_docker stop $(docker ps -a -q)_**
 
 # Remove all containers
 
-**_docker rm $(docker ps -aq)_**
+**_docker rm $(docker ps -a -q)_**
 
 # Remove all images
 
