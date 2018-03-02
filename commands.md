@@ -34,3 +34,13 @@ then you must use the same name with other docker-compose commands
 # Remove all images
 
 **_docker rmi $(docker images -q)_**
+
+# Purging All Unused or Dangling Images, Containers, Volumes, and Networks
+
+Docker provides a single command that will clean up any resources — images, containers, volumes, and networks — that are dangling (not associated with a container):
+
+**_docker system prune_**
+
+To additionally remove any stopped containers and all unused images (not just dangling images), add the -a flag to the command:
+
+**_docker system prune -a_**
