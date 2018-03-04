@@ -4,7 +4,7 @@
 
 set -e
 
-while ! nc -z bedrock_sage_lara $APACHE_CONTAINER_PORT; do
+while ! nc -z 127.0.0.1 $APACHE_PORT; do
   echo "Waiting for project installation..."
   sleep 5
 done
