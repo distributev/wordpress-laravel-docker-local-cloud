@@ -86,7 +86,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     entrypoint: /opt/wait.sh
-    command: npm --prefix ${LARAVEL_PATH} run watch
+    command: npm --prefix ${LARAVEL_PATH} run watch-poll
     depends_on:
       - bedrock_sage_lara
     volumes:
