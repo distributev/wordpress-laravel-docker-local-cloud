@@ -9,6 +9,13 @@ if [ ! -d $SAGE_PATH ]; then
   composer create-project roots/sage $SAGE_PATH dev-master
   yarn --cwd=$SAGE_PATH #install npm dependencies
   yarn --cwd=$SAGE_PATH run build #compile assets
+
+  cat > $SAGE_PATH/resources/assets/config-local.json << EOF
+{
+  "proxyUrl": "http://app.dev:3000"
+}
+EOF
+
   
 fi
 

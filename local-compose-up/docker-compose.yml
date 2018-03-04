@@ -52,7 +52,7 @@ services:
       ADMIN_USER: admin
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
-      WP_HOME: http://127.0.0.1
+      WP_HOME: http://${APP_URL}
 
   #this container will be used only in the dev environment when using sage theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -69,7 +69,7 @@ services:
     network_mode: host
     environment:
       APACHE_PORT: 80
-      DEVURL: http://127.0.0.1
+      DEVURL: http://${APP_URL}
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
