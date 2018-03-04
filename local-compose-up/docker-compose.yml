@@ -53,6 +53,14 @@ services:
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
       WP_HOME: http://${APP_URL}
+      #Variables related to Laravel
+      APP_URL: http://${APP_URL}/lara
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
 
   #this container will be used only in the dev environment when using sage theme. 
   #it will run server using webpack that watch resources file changes and compile them

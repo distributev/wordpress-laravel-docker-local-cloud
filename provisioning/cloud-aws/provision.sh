@@ -61,6 +61,15 @@ dokku config:set --no-restart $APP_NAME ADMIN_EMAIL=${admin_email}
 dokku config:set --no-restart $APP_NAME WP_HOME=http://$APP_NAME.$DOMAIN
 dokku config:set --no-restart $APP_NAME WP_SITEURL=http://$APP_NAME.$DOMAIN/wp
 
+#Variables related to Laravel
+dokku config:set --no-restart $APP_NAME APP_URL=http://$APP_NAME.$DOMAIN/lara
+dokku config:set --no-restart $APP_NAME DB_CONNECTION=mysql
+dokku config:set --no-restart $APP_NAME DB_HOST=dokku-mysql-$DB_NAME
+dokku config:set --no-restart $APP_NAME DB_PORT=3306
+dokku config:set --no-restart $APP_NAME DB_DATABASE=$DB_NAME
+dokku config:set --no-restart $APP_NAME DB_USERNAME=mysql
+dokku config:set --no-restart $APP_NAME DB_PASSWORD=$DB_PASSWORD
+
 #Laravel app key must be generate one time and stored carefully, sensitive data in database will be encrypted with it
 LARAVEL_APP_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 echo $LARAVEL_APP_KEY >> /home/dokku/$APP_NAME_laravel_app_key #not working
