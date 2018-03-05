@@ -36,7 +36,7 @@ services:
       - mysql
     network_mode: host
     expose:
-      - "80"
+      - "${APACHE_PORT}"
     volumes:
       - ${PROJECT_PATH}:/var/www/html
       - ./:/tmp/setup
@@ -52,9 +52,9 @@ services:
       ADMIN_USER: admin
       ADMIN_PASS: password
       ADMIN_EMAIL: test@test.com
-      WP_HOME: http://${APP_URL}
+      WP_HOME: http://${APP_URL}:${APACHE_PORT}
       #Variables related to Laravel
-      APP_URL: http://${APP_URL}/lara
+      APP_URL: http://${APP_URL}:${APACHE_PORT}/lara
       DB_CONNECTION: mysql
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
@@ -76,8 +76,8 @@ services:
       - ${PROJECT_PATH}:/var/www/html
     network_mode: host
     environment:
-      APACHE_PORT: 80
-      DEVURL: http://${APP_URL}
+      APACHE_PORT: ${APACHE_PORT}
+      DEVURL: http://${APP_URL}:${APACHE_PORT}
 
   #this container will be used only in the dev environment when using laravel theme. 
   #it will run server using webpack that watch resources file changes and compile them
@@ -93,6 +93,6 @@ services:
       - ${PROJECT_PATH}:/var/www/html
     network_mode: host
     environment:
-      APACHE_PORT: 80
+      APACHE_PORT: ${APACHE_PORT}
 
 

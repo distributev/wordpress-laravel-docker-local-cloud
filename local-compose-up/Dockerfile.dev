@@ -84,8 +84,9 @@ COPY 20-laravel/*.sh /opt/
 RUN chmod +x /opt/*.sh \
   && dos2unix /opt/*.sh
 
-EXPOSE 80
+EXPOSE 8080
 COPY 00-apache/apache-sites.conf /etc/apache2/sites-available/000-default.conf
+COPY 00-apache/apache-ports.conf /etc/apache2/ports.conf
 
 CMD /opt/init.sh && exec apache2-foreground
 
