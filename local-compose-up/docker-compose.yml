@@ -4,9 +4,15 @@ volumes:
   wordpress-mysql:
     driver: "local"
 
+networks:
+  bedrock:
+      driver: bridge
+      ipam:
+          driver: default
+          config:
+          - subnet: 172.23.0.0/24
 
 services:
-
 
   mysql:
     image: mysql:${MYSQL_VERSION}
@@ -19,6 +25,8 @@ services:
       - wordpress-mysql:/var/lib/mysql
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
+    networks:
+      bedrock:
 
   adminer:
     image: adminer
@@ -26,6 +34,8 @@ services:
       - mysql:db
     ports:
       - 9000:8080
+    networks:
+      bedrock:
 
 
   bedrock_sage_lara:
@@ -34,19 +44,24 @@ services:
       dockerfile: Dockerfile.dev
     depends_on:
       - mysql
-    network_mode: host
-    expose:
-      - "${APACHE_PORT}"
+    links:
+      - mysql:db
+    ports:
+      - "${APACHE_PORT}:${APACHE_PORT}"
+    networks:
+      bedrock:
+        ipv4_address: 172.23.0.10
     volumes:
       - ${PROJECT_PATH}:/var/www/html
       - ./:/tmp/setup
     environment:
       BEDROCK_PATH: ${BEDROCK_PATH}
       LARAVEL_PATH: ${LARAVEL_PATH}
+      APACHE_PORT: ${APACHE_PORT}
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
-      DB_HOST: 127.0.0.1
+      DB_HOST: db
       WP_ENV: development
       SITE_TITLE: Wordpress
       ADMIN_USER: admin
@@ -56,7 +71,7 @@ services:
       #Variables related to Laravel
       APP_URL: http://${APP_URL}:${APACHE_PORT}/lara
       DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
+      DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: ${MYSQL_DATABASE}
       DB_USERNAME: ${MYSQL_USER}
@@ -72,9 +87,15 @@ services:
     command: yarn --cwd=${BEDROCK_PATH}/web/app/themes/sage run start
     depends_on:
       - bedrock_sage_lara
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    networks:
+      bedrock:
+    extra_hosts:
+      - "${APP_URL}:172.23.0.10"
     volumes:
       - ${PROJECT_PATH}:/var/www/html
-    network_mode: host
     environment:
       APACHE_PORT: ${APACHE_PORT}
       DEVURL: http://${APP_URL}:${APACHE_PORT}
@@ -89,9 +110,12 @@ services:
     command: npm --prefix ${LARAVEL_PATH} run watch-poll
     depends_on:
       - bedrock_sage_lara
+    links:
+      - bedrock_sage_lara:apache
+    networks:
+      bedrock:
     volumes:
       - ${PROJECT_PATH}:/var/www/html
-    network_mode: host
     environment:
       APACHE_PORT: ${APACHE_PORT}
 
