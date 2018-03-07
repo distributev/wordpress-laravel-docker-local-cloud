@@ -22,6 +22,13 @@ then you must use the same name with other docker-compose commands
 * **_docker-compose -p $project_name$ logs_**
 * **_docker-compose -p $project_name$ logs -f $service_name$_**
 
+# Restart all containers
+
+**_docker-compose -p $project_name$ restart_**
+
+# Restart a specific container (service)
+
+**_docker-compose -p $project_name$ restart $service_name$_**
 
 # Stop all running containers
 
