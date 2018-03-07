@@ -55,6 +55,7 @@ services:
       - ${PROJECT_PATH}:/var/www/html
       - ./:/tmp/setup
     environment:
+      APP_DOMAIN: ${APP_URL}
       BEDROCK_PATH: ${BEDROCK_PATH}
       LARAVEL_PATH: ${LARAVEL_PATH}
       APACHE_PORT: ${APACHE_PORT}

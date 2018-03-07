@@ -5,12 +5,13 @@ set -ax
 BEDROCK_PATH=${BEDROCK_PATH:-"bedrock"}
 SAGE_PATH="$BEDROCK_PATH/web/app/themes/sage"
 LARAVEL_PATH=${LARAVEL_PATH:-"laravel"}
+APP_DOMAIN=${APP_DOMAIN:-"app.devel"}
 
 
 chown -R www-data:www-data . && chmod g+s .
 
 gosu www-data /opt/bedrock.sh $BEDROCK_PATH
-gosu www-data /opt/sage.sh $SAGE_PATH
+gosu www-data /opt/sage.sh $SAGE_PATH $APP_DOMAIN
 gosu www-data /opt/wordpress.sh $BEDROCK_PATH
 gosu www-data /opt/laravel.sh $LARAVEL_PATH
 
