@@ -101,7 +101,8 @@ COPY apache-sites.conf /etc/apache2/sites-available/000-default.conf
 
 COPY wordpress.sh /opt/
 USER root
-RUN chmod +x /opt/wordpress.sh
+RUN sed -i 's/^<VirtualHost \*:[0-9]*>$/<VirtualHost *:80>/g' /etc/apache2/sites-available/000-default.conf \
+  && chmod +x /opt/wordpress.sh
 USER www-data
 
 # CMD ["apache2-foreground"]
