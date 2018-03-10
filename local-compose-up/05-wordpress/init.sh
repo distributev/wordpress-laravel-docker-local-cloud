@@ -15,10 +15,16 @@ gosu www-data /opt/sage.sh $SAGE_PATH $APP_DOMAIN
 gosu www-data /opt/wordpress.sh $BEDROCK_PATH
 gosu www-data /opt/laravel.sh $LARAVEL_PATH
 
-for file in .dockerignore Dockerfile Dockerfile.dev docker-compose.yml 00-apache/apache-sites.conf 05-wordpress/wordpress.sh; 
+for file in .dockerignore Dockerfile Dockerfile.dev docker-compose.yml;
 do 
   cp "/tmp/setup/$file" .; 
 done
+mkdir -p .docker
+for file in 00-apache/apache-sites.conf 05-wordpress/wordpress.sh 25-dependencies/*.sh;
+do 
+  cp /tmp/setup/$file .docker/; 
+done
+
 chmod -R 777 .
 
 set +x
