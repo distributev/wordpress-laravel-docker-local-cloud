@@ -82,6 +82,7 @@ tail -f /var/log/cloud-init-output.log
 First time 
 
 `git add -A .`
+
 `git commit -am "my first commit"`
 
 5. `git push dokku master`
