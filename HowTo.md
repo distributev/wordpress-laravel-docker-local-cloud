@@ -78,6 +78,12 @@ tail -f /var/log/cloud-init-output.log
     * $wordpress with `app_name` set before in `variables.tf`
 
 4. Commit changes
+
+First time 
+
+`git add -A .`
+`git commit -am "my first commit"`
+
 5. `git push dokku master`
 
 ### Subsequent deployments
