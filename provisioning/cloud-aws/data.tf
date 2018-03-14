@@ -29,12 +29,15 @@ data "template_file" "dokku_provisioning" {
 
     vars {
         ebs_device_name = "${var.ebs_device_name}"
+        ec2_user = "${var.ec2_user}"
+        ec2_password = "${var.ec2_password}"
         dokku_version = "${var.dokku_version}"
         domain = "${var.domain}"
         key_dokku = "${var.key_dokku}"
         app_name = "${var.app_name}"
         mysql_version = "${var.mysql_version}"
         mysql_db_name = "${var.mysql_db_name}"
+        dokku_mysql_password = "${var.dokku_mysql_password}"
         site_title = "${var.site_title}"
         admin_user = "${var.admin_user}"
         admin_pass = "${var.admin_pass}"

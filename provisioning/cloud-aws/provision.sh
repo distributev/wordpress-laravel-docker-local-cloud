@@ -2,7 +2,6 @@
 
 DOMAIN="${domain}"
 APP_NAME="${app_name}"
-MYSQL_VERSION="${mysql_version}"
 DB_NAME="${mysql_db_name}"
 
 
@@ -33,7 +32,7 @@ then
 else
     echo "Installing MySQL plugin..."
     dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
-    MYSQL_IMAGE_VERSION="$MYSQL_VERSION" dokku mysql:create $DB_NAME
+    MYSQL_IMAGE_VERSION="${mysql_version}" SERVICE_PASSWORD="${dokku_mysql_password}" dokku mysql:create $DB_NAME
 
     echo "Installing Adminer..."
     docker run -d -p ${adminer_port}:8080 --link dokku.mysql.$DB_NAME:db --name adminer adminer
@@ -76,3 +75,16 @@ echo $LARAVEL_APP_KEY >> /home/dokku/$APP_NAME_laravel_app_key #not working
 dokku config:set --no-restart $APP_NAME APP_KEY=$LARAVEL_APP_KEY
 
 dokku config:set $APP_NAME WP_ENV=production
+
+
+echo "Creating new user"
+if [[ -n "${ec2_user}" ]]; then
+  useradd ${ec2_user} -m -s /bin/bash
+  usermod -aG sudo ${ec2_user}
+  echo "${ec2_user} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ahmed
+  echo -e "${ec2_password}\n${ec2_password}\n" | sudo passwd ${ec2_user}
+  sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+  /usr/sbin/sshd -t || exit 1;
+  systemctl reload sshd
+  rm -f /var/lib/cloud/instances/*/user-data.txt #remove this script from the server as it contains password
+fi
