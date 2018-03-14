@@ -15,7 +15,7 @@ gosu www-data /opt/sage.sh $SAGE_PATH $APP_DOMAIN
 gosu www-data /opt/wordpress.sh $BEDROCK_PATH
 gosu www-data /opt/laravel.sh $LARAVEL_PATH
 
-for file in .dockerignore Dockerfile Dockerfile.dev docker-compose.yml;
+for file in .dockerignore Dockerfile;
 do 
   cp "/tmp/setup/$file" .; 
 done
