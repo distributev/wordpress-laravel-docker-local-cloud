@@ -18,7 +18,7 @@ RUN apt-get update \
 
 ENTRYPOINT ["docker-php-entrypoint"]
 
-ENV APP_PATH /var/www/wordpress
+ENV APP_PATH /tmp/app
 ENV BEDROCK_PATH $APP_PATH/bedrock
 ENV SAGE_PATH $BEDROCK_PATH/web/app/themes/sage
 ENV LARAVEL_PATH $APP_PATH/laravel
@@ -30,7 +30,7 @@ ENV LOCAL_LARAVEL_PATH laravel
 RUN mkdir -p $APP_PATH \
   mkdir -p $SAGE_PATH/dist \
   mkdir -p $LARAVEL_PATH \
-  && chown -R www-data:www-data /var/www && chmod g+s .
+  && chown -R www-data:www-data /var/www /tmp/app && chmod g+s .
 
 
 USER www-data
