@@ -57,7 +57,7 @@ WORKDIR $APP_PATH
 COPY  --chown=www-data:www-data . $APP_PATH
 
 WORKDIR $SAGE_PATH
-RUN yarn run build:production
+RUN yarn run build
 
 WORKDIR $LARAVEL_PATH
 RUN composer install --no-dev --optimize-autoloader \
