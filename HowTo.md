@@ -78,6 +78,15 @@ Note that, even after Terraform finish, you need to wait for `provision.sh` scri
 tail -f /var/log/cloud-init-output.log
 ```
 
+## How to provision only Amazon RDS database environment?
+
+I understand very well your queries, you shouldn't provision ec2 until you need it. If you comment ec2 module in main.tf (lines 8-29), terraform will provision only Amazon RDS. Uncomment them later when ec2 is needed.
+or better, you could directly target only rds module 
+
+```
+terraform apply -target=module.rds
+```
+
 ## Deploy
 
 ### First time deployment
