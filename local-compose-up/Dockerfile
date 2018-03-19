@@ -57,6 +57,9 @@ WORKDIR $APP_PATH
 COPY  --chown=www-data:www-data . $APP_PATH
 
 WORKDIR $SAGE_PATH
+# production build should be used in production because it optimizes code but it doesn't work correctly
+# https://github.com/distributev/wordpress-laravel-docker-local-cloud/issues/61
+# RUN yarn run build:production
 RUN yarn run build
 
 WORKDIR $LARAVEL_PATH
