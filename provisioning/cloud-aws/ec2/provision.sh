@@ -47,35 +47,63 @@ dokku domains:add $APP_NAME $APP_NAME.$DOMAIN
 dokku proxy:ports-add $APP_NAME http:80:80
 dokku proxy:ports-remove $APP_NAME http:80:5000
 dokku mysql:link $DB_NAME $APP_NAME
-DB_PASSWORD=$(dokku mysql:info $DB_NAME --dsn | awk -F ':' '{print $3}' | awk -F '@' '{print $1}')
-dokku config:set --no-restart $APP_NAME DB_NAME=$DB_NAME
-dokku config:set --no-restart $APP_NAME DB_USER=mysql
-dokku config:set --no-restart $APP_NAME DB_PASSWORD=$DB_PASSWORD
-dokku config:set --no-restart $APP_NAME DB_HOST=dokku-mysql-$DB_NAME
 
+
+
+
+
+#Variables related to Wordpress
 dokku config:set --no-restart $APP_NAME SITE_TITLE=${site_title}
 dokku config:set --no-restart $APP_NAME ADMIN_USER=${admin_user}
 dokku config:set --no-restart $APP_NAME ADMIN_PASS=${admin_pass}
 dokku config:set --no-restart $APP_NAME ADMIN_EMAIL=${admin_email}
 dokku config:set --no-restart $APP_NAME WP_HOME=http://$APP_NAME.$DOMAIN
 dokku config:set --no-restart $APP_NAME WP_SITEURL=http://$APP_NAME.$DOMAIN/wp
+dokku config:set --no-restart $APP_NAME WP_ENV=production
 
 #Variables related to Laravel
 dokku config:set --no-restart $APP_NAME APP_URL=http://$APP_NAME.$DOMAIN/lara
 dokku config:set --no-restart $APP_NAME DB_CONNECTION=mysql
-dokku config:set --no-restart $APP_NAME DB_HOST=dokku-mysql-$DB_NAME
-dokku config:set --no-restart $APP_NAME DB_PORT=3306
-dokku config:set --no-restart $APP_NAME DB_DATABASE=$DB_NAME
-dokku config:set --no-restart $APP_NAME DB_USERNAME=mysql
-dokku config:set --no-restart $APP_NAME DB_PASSWORD=$DB_PASSWORD
-
 #Laravel app key must be generate one time and stored carefully, sensitive data in database will be encrypted with it
 LARAVEL_APP_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 echo $LARAVEL_APP_KEY >> /home/dokku/$APP_NAME_laravel_app_key #not working
 dokku config:set --no-restart $APP_NAME APP_KEY=$LARAVEL_APP_KEY
 
-dokku config:set $APP_NAME WP_ENV=production
+cat > /home/dokku/connect-to-db.sh << EOF
+#!/bin/bash
+#Usage ./connect-to-db.sh appName typeDb
+#appName: bedrock application name set in Dokku
+#typeDb: which database you to connect, could be dokku-mysql or rds
 
+APP_NAME=\$1
+DB_TYPE=\$2
+DB_NAME=${mysql_db_name}
+DOKKU_MYSQL_PASSWORD=$(dokku mysql:info $DB_NAME --dsn | awk -F ':' '{print $3}' | awk -F '@' '{print $1}')
+
+dokku config:set --no-restart $APP_NAME DB_NAME=\$DB_NAME #Wordpress
+dokku config:set --no-restart $APP_NAME DB_DATABASE=\$DB_NAME #Laravel
+
+case "\$DB_TYPE" in
+  #List patterns for the conditions you want to meet
+  "dokku-mysql") 
+    #Variables that configures connection to dokku-mysql for both Wordpress and Laravel
+    dokku config:set --no-restart $APP_NAME DB_USER=mysql #Wordpress
+    dokku config:set --no-restart $APP_NAME DB_USERNAME=mysql #Laravel
+    dokku config:set --no-restart $APP_NAME DB_PASSWORD=\$DOKKU_MYSQL_PASSWORD
+    dokku config:set $APP_NAME DB_HOST=dokku-mysql-\$DB_NAME
+  ;;
+  "rds")
+    #Variables that configures connection to rds for both Wordpress and Laravel
+    dokku config:set --no-restart $APP_NAME DB_USER=${rds_mysql_user} #Wordpress
+    dokku config:set --no-restart $APP_NAME DB_USERNAME=${rds_mysql_user} #Laravel
+    dokku config:set --no-restart $APP_NAME DB_PASSWORD=${rds_mysql_password}
+    dokku config:set $APP_NAME DB_HOST=${rds_host}
+  ;;
+  *) echo "Wrong database type";;
+esac
+EOF
+chmod +x /home/dokku/connect-to-db.sh
+/home/dokku/connect-to-db.sh $APP_NAME "rds"
 
 echo "Creating new user"
 if [[ -n "${ec2_user}" ]]; then
@@ -86,5 +114,5 @@ if [[ -n "${ec2_user}" ]]; then
   sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/g' /etc/ssh/sshd_config
   /usr/sbin/sshd -t || exit 1;
   systemctl reload sshd
-  rm -f /var/lib/cloud/instances/*/user-data.txt #remove this script from the server as it contains password
+  # rm -f /var/lib/cloud/instances/*/user-data.txt #remove this script from the server as it contains password
 fi

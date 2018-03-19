@@ -17,6 +17,20 @@
     * You need to provide the path to the project where the setup will create the new bedrock project via `PROJECT_PATH` variable
     * `WP_INIT` has to be set to `yes` the first time in order to initialize the project (bedrock, sage,...), when omitted, the project will not be initialized and this assumes that `PROJECT_PATH` already contains bedrock project
 
+## Troubleshooting
+
+### Watching
+Watching file changes is not working when using shared volumes in Docker native for windows 10. As workaroud, Watch polling must be enabled.
+
+While polling can be easily enabled for larabel frontend by execusing watch-poll target (`npm --prefix ${LARAVEL_PATH} run watch-poll`), we need to configure it manually for sage frontend by adding the following line in `webpack.config.watch.js`
+```
+  devServer: {
+    watchOptions: {
+      poll: true
+    }
+  }
+```
+[More details here ](https://discourse.roots.io/t/browsersync-not-watching-changes-in-docker-for-windows/11275/2)
 
 # Setup the production environment on AWS
 
@@ -41,6 +55,7 @@ You can also use the same ssh key for both connecting to EC2 and pushing code to
     * copy `secret.auto.tfvars.example` to `secret.auto.tfvars`. This file is intended to contains all secret variables and should not be versioned (it figures in `.gitignore` btw)
     * Fill all the other non secret variables in `variables.tf`
 3. Install AWS Terraform provider with `terraform init`
+4. Tell Terraform that we are using modules and need to get them `terraform get`
 
 ## Provision AWS environment
 
