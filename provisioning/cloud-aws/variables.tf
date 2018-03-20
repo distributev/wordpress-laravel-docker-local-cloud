@@ -69,7 +69,7 @@ variable "dokku_mysql_password" {
 
 ################### RDS module variables ####################
 variable "rds_mysql_user" {
-  default = "admin"
+  default = "mysql_admin"
   description = "required, rds username"
 }
 
