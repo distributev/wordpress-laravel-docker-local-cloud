@@ -30,8 +30,6 @@ services:
 
   adminer:
     image: adminer
-    links:
-      - mysql:db
     ports:
       - ${ADMINER_PORT}:8080
     networks:
@@ -42,10 +40,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    depends_on:
-      - mysql
-    links:
-      - mysql:db
     ports:
       - "${APACHE_PORT}:${APACHE_PORT}"
     networks:
@@ -63,7 +57,7 @@ services:
       DB_NAME: ${MYSQL_DATABASE}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
-      DB_HOST: db
+      DB_HOST: ${MYSQL_HOST}
       WP_ENV: development
       SITE_TITLE: Wordpress
       ADMIN_USER: admin
@@ -73,8 +67,8 @@ services:
       #Variables related to Laravel
       APP_URL: http://${APP_URL}:${APACHE_PORT}/lara
       DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
+      DB_HOST: ${MYSQL_HOST}
+      DB_PORT: ${MYSQL_PORT}
       DB_DATABASE: ${MYSQL_DATABASE}
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
