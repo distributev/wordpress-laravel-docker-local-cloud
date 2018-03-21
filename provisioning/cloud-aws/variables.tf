@@ -95,7 +95,7 @@ variable "publicly_accessible" {
 
 ################### Shared variables between RDS and EC2 module ####################
 variable "mysql_db_name" {
-  default = "wordpressDb"
+  default = "wordpress"
   description = "mysql database name"
 }
 
