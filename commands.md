@@ -34,6 +34,10 @@ then you must use the same name with other docker-compose commands
 
 **_docker stop $(docker ps -a -q)_**
 
+# The easiest way to delete the volume is to delete the whole stack
+
+**_docker-compose -p $project_name$ down -v_**
+
 # Remove all containers
 
 **_docker rm $(docker ps -a -q)_**
