@@ -24,21 +24,7 @@ then
 fi
 
 
-echo "Installing MySQL Dokku plugin"
-dokku plugin:list | tail -n '+2' | awk '{print $1}' | grep -qe ^mysql$
-if [ $? -eq 0 ]
-then
-    echo "MySQL plugin is already installed"
-else
-    echo "Installing MySQL plugin..."
-    dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
-    MYSQL_IMAGE_VERSION="${mysql_version}" SERVICE_PASSWORD="${dokku_mysql_password}" dokku mysql:create $DB_NAME
 
-    echo "Installing Adminer..."
-    docker run -d -p ${adminer_port}:8080 --link dokku.mysql.$DB_NAME:db --name adminer adminer
-
-    
-fi
 
 echo "Creating wordpress app"
 dokku apps:create $APP_NAME
@@ -47,10 +33,6 @@ dokku domains:add $APP_NAME $APP_NAME.$DOMAIN
 dokku proxy:ports-add $APP_NAME http:80:80
 dokku proxy:ports-remove $APP_NAME http:80:5000
 dokku mysql:link $DB_NAME $APP_NAME
-
-
-
-
 
 #Variables related to Wordpress
 dokku config:set --no-restart $APP_NAME SITE_TITLE=${site_title}
@@ -105,8 +87,20 @@ EOF
 chmod +x /home/dokku/connect-to-db.sh
 if [ ${connect_to_rds} == "yes" ]
 then
+  docker run -d -p ${adminer_port}:8080 --link ${rds_host}:db --name adminer adminer
   /home/dokku/connect-to-db.sh $APP_NAME "rds"
 else
+  echo "Installing MySQL Dokku plugin"
+  dokku plugin:list | tail -n '+2' | awk '{print $1}' | grep -qe ^mysql$
+  if [ $? -eq 0 ]
+  then
+      echo "MySQL plugin is already installed"
+  else
+      echo "Installing MySQL plugin..."
+      dokku plugin:install https://github.com/dokku/dokku-mysql.git mysql
+      MYSQL_IMAGE_VERSION="${mysql_version}" SERVICE_PASSWORD="${dokku_mysql_password}" dokku mysql:create $DB_NAME
+  fi
+  docker run -d -p ${adminer_port}:8080 --link dokku.mysql.$DB_NAME:db --name adminer adminer
   /home/dokku/connect-to-db.sh $APP_NAME "dokku-mysql"
 fi
 
