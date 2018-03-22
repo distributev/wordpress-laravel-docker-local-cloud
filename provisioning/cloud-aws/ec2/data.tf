@@ -46,6 +46,7 @@ data "template_file" "dokku_provisioning" {
         admin_pass = "${var.admin_pass}"
         admin_email = "${var.admin_email}"
         adminer_port = "${var.adminer_port}"
+        connect_to_rds = "${var.connect_to_rds}"
     }
 }
 

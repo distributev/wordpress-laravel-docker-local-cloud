@@ -17,6 +17,7 @@ variable "rds_host" {} #no need to be set anywhere, it's grabbed from rds module
 variable "admin_pass" {}
 variable "dokku_mysql_password" {}
 variable "ec2_password" {}
+variable "connect_to_rds" {}
 variable "ebs_device_name" {
   default = "/dev/xvdh"
   description = "device name of the mounted volume, no need to change!"

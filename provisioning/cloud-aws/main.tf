@@ -26,6 +26,7 @@ module "ec2" {
   domain                  = "${var.domain}"
   app_name                = "${var.app_name}"
   adminer_port            = "${var.adminer_port}"
+  connect_to_rds          = "${var.connect_to_rds}"
 }
 
 

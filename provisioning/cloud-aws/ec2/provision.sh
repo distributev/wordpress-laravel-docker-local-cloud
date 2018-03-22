@@ -103,7 +103,12 @@ case "\$DB_TYPE" in
 esac
 EOF
 chmod +x /home/dokku/connect-to-db.sh
-/home/dokku/connect-to-db.sh $APP_NAME "rds"
+if [ ${connect_to_rds} == "yes" ]
+then
+  /home/dokku/connect-to-db.sh $APP_NAME "rds"
+else
+  /home/dokku/connect-to-db.sh $APP_NAME "dokku-mysql"
+fi
 
 echo "Creating new user"
 if [[ -n "${ec2_user}" ]]; then
