@@ -87,7 +87,7 @@ EOF
 chmod +x /home/dokku/connect-to-db.sh
 if [ ${connect_to_rds} == "yes" ]
 then
-  docker run -d -p ${adminer_port}:8080 --link ${rds_host}:db --name adminer adminer
+  docker run -d -p ${adminer_port}:8080 --name adminer adminer
   /home/dokku/connect-to-db.sh $APP_NAME "rds"
 else
   echo "Installing MySQL Dokku plugin"
